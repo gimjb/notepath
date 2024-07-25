@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Return key goes to the found line in search.
+- Escape key clears the search and return to the previous line.
 
 ## [0.1.1]: 2024-07-25Z
 

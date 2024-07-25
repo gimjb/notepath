@@ -76,6 +76,7 @@ export default async function openFile (path: string, char = 80): Promise<void> 
 
   let query: string[] = []
   let results: Line[] = lines
+  let returnLine: number = 0
 
   process.stdin.on('keypress', (str, key) => {
     if (key.name === 'up') {
@@ -85,6 +86,13 @@ export default async function openFile (path: string, char = 80): Promise<void> 
 
     if (key.name === 'down') {
       lineIndex = Math.min(lines.length - 1, lineIndex + 1)
+      return render(results, char, query)
+    }
+
+    if (key.name === 'escape') {
+      lineIndex = returnLine
+      results = lines
+      query = []
       return render(results, char, query)
     }
   })
@@ -110,6 +118,7 @@ export default async function openFile (path: string, char = 80): Promise<void> 
       return render(results, char)
     }
 
+    if (query.length === 0) returnLine = lineIndex
     lineIndex = 0
     query = input.toLowerCase().split(/\s+/)
     results = search(lines, query)
