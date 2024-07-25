@@ -95,7 +95,9 @@ export default async function openFile (path: string, char = 80): Promise<void> 
     }
 
     if (input === '') {
+      lineIndex = (results[lineIndex]?.line ?? 1) - 1
       results = lines
+      query = []
       return render(lines, char)
     }
 
