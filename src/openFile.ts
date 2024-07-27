@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import readline from 'node:readline'
 import chalk from 'chalk'
+import config from './config'
 
 function completer (line: string): readline.CompleterResult {
   const completions = [':q']
@@ -32,7 +33,7 @@ function format (lines: Line[], char = 80, query: string[] = []): string {
         lineLength = paddingStr.length
       }
 
-      result += query.includes(word.toLowerCase()) ? chalk.hex('#ff4488').bold(word) as string : word
+      result += query.includes(word.toLowerCase()) ? chalk.hex('#ff4488').bold(word) : word
       lineLength += word.length + 1
     }
 
@@ -57,6 +58,8 @@ function render (lines: Line[], char = 80, query: string[] = []): void {
 
 export default async function openFile (path: string, char = 80): Promise<void> {
   const data = await fs.readFile(path, 'utf-8')
+  const file = config.getFile(path) ?? { path, lineIndex: 0 }
+  lineIndex = file.lineIndex
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -99,6 +102,8 @@ export default async function openFile (path: string, char = 80): Promise<void> 
 
   rl.on('line', input => {
     if (input === ':q') {
+      file.lineIndex = results === lines ? lineIndex : returnLine
+      void config.setFile(file).save()
       return rl.close()
     }
 
